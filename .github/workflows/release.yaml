@@ -1,0 +1,76 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Generate version.verse
+        run: |
+          # Remove v
+          TAG_NAME=${GITHUB_REF_NAME#v}
+          
+          # Parse version
+          MAJOR=$(echo $TAG_NAME | cut -d. -f1)
+          MINOR=$(echo $TAG_NAME | cut -d. -f2)
+          PATCH=$(echo $TAG_NAME | cut -d. -f3)
+          PATCH=${PATCH:-0}
+          
+          # Encode into an integer
+          VERSE_VERSION=$((MAJOR * 10000 + MINOR * 100 + PATCH))
+          
+          # Write to the file
+          cat <<EOF > lib/version.verse
+          # The current version of the ScreenSpace module.
+          Version<public> : type{V:int where V >= 10000} = ${VERSE_VERSION}
+          EOF
+          
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
+      - name: Package Files
+        run: |
+          # Create dist folders
+          mkdir -p dist/ScreenSpace
+          mkdir -p dist/Python
+          
+          # Copy files their directories
+          cp LICENSE dist/ScreenSpace/
+          cp lib/*.verse dist/ScreenSpace/
+          cp tools/*.py dist/Python/
+          
+          # Package into zip
+          cd dist
+          zip -r ../ScreenSpace-${{ env.TAG_NAME }}.zip ./*
+          cd ..
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ScreenSpace-${{ env.TAG_NAME }}.zip
+          name: v${{ env.TAG_NAME }}
+          body: |
+            ## ScreenSpace v${{ env.TAG_NAME }}
+            (Description)
+
+            ### Changes
+
+            ### Fixes
+
+            ### Notes
+            
+            ### Installation
+            Download `ScreenSpace-${{ env.TAG_NAME }}.zip` below and extract it, then copy the "**ScreenSpace**" folder to your UEFN project's Content/ directory.
+          draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
