@@ -31,7 +31,7 @@ using { /Verse.org/SpatialMath }
             CrossDirections := CrossProduct(Corner.Direction, Left.Direction)
             Corner.Origin + Corner.Direction * DotProduct(CrossDelta, CrossDirections) / DotProduct(CrossDirections, CrossDirections)
 
-# Calculates a `rect` in the normalized viewport space coordinates that perfectly encloses the `Bounds`.
+# Calculates a `rect` in normalized coordinates on the `Player`'s viewport that perfectly encloses the `Bounds`.
 # Fails if the `Bounds` are entirely behind the camera.
 (Player:player).GetScreenRect<public>(Bounds:oriented_bounds)<decides><transacts>:rect=
     Corners:[]vector3 = Bounds.GetCorners()
@@ -47,7 +47,7 @@ using { /Verse.org/SpatialMath }
     Projected.Length > 0
     rect.MinMaxRect(MinX, MinY, MaxX, MaxY)
 
-# Calculates a `rect` in the normalized viewport space coordinates that perfectly encloses the `Entity`'s bounds.
+# Calculates a `rect` in normalized coordinates on the `Player`'s viewport that perfectly encloses the `Entity`'s bounds.
 # Fails if the `Entity`'s bounds are entirely behind the camera or if none of its descendants have a `bounds_component`.
 (Player:player).GetScreenRect<public>(Entity:entity)<decides><transacts>:rect=
     OrientedBounds:oriented_bounds = Entity.GetOrientedBounds[]
