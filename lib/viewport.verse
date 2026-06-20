@@ -36,9 +36,9 @@ using { /Verse.org/SpatialMath }
         X := ViewportPosition.Left / (Center.Left * 2)
         Y := -ViewportPosition.Up / (-Center.Up * 2)
 
-# Makes a `vector2i` representing the `Player`'s screen's aspect ratio with the greatest common denominator.
-# For example, `vector2i{X:=16, Y:=9}`.
-(Player:player).GetViewportAspectRatio<public>()<decides><transacts>:SpatialMath.vector2i=
+# Makes an `aspect_ratio` representing the `Player`'s screen's aspect ratio with the greatest common denominator.
+# For example, `aspect_ratio{Height:=9, Width:=16}`.
+(Player:player).GetViewportAspectRatio<public>()<decides><transacts>:aspect_ratio=
     Center:vector3 = Player.GetViewportCenter[]
     var Denominator:float = 0.0
     var LastDenominator:float = 1.0
@@ -62,9 +62,9 @@ using { /Verse.org/SpatialMath }
             set Return = false
             break
     Return?
-    SpatialMath.vector2i:
-        X := Int[Numerator]
-        Y := Int[Denominator]
+    aspect_ratio:
+        Height := Int[Denominator]
+        Width := Int[Numerator]
 
 # Makes a `vector3` with the `Player`'s viewport's center in viewport space.
 (Player:player).GetViewportCenter<public>()<decides><reads>:vector3=
@@ -72,7 +72,7 @@ using { /Verse.org/SpatialMath }
     Player.ProjectWorldToViewport[Ray.GetPoint(1.0)]
 
 # Returns the `Player`'s screen's decimal aspect ratio.
-# This should be equivalent to `Player.GetViewportAspectRatio[] * 1.0 / (Player.GetViewportAspectRatio[] * 1.0)`.
+# This should be equivalent to `Player.GetViewportAspectRatio[].GetRatio()`.
 (Player:player).GetViewportRatio<public>()<decides><reads>:float=
     Center:vector3 = Player.GetViewportCenter[]
     Center.Left / -Center.Up
