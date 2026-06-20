@@ -41,7 +41,7 @@ my_component := class<final_super>(component):
             true?
         then:
             if (AspectRatio := Player.GetViewportAspectRatio[]):
-                Print("The player's aspect ratio is {AspectRatio.X}:{AspectRatio.Y}")
+                Print("The player's aspect ratio is {AspectRatio}")
             loop:
                 if (Player.IsEntityOnScreen[Entity]):
                     Print("The player is looking at the component's entity!")
