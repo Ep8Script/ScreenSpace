@@ -88,32 +88,18 @@ using { /Verse.org/SpatialMath }
     Ray:ray = Player.GetCameraRay()
     Entity.Linecast[Ray.Origin, End]
 
-# Casts forwards from the `Player`'s camera against all bounding boxes in the entity's descendants, starting with `Entity`.
-# Returns information about where an entity's bounding box was hit.
-# Fails if there is no entity found with a bounding box intersecting the line in front of the `Player`'s camera.
-# NOTE: Raycasts will not detect any `bounds` that contain the `Player`'s camera's transform point.
-(Player:player).Raycast<public>(Entity:entity)<decides><transacts>:raycast_hit=
-    Player.Raycast[Entity, Inf]
-
 # Casts a line from the `Player`'s camera with `MaxDistance` against all bounding boxes in the entity's descendants, starting with `Entity`.
 # Returns information about where an entity's bounding box was hit.
 # Fails if there is no entity found with a bounding box intersecting the line in front of the `Player`'s camera.
 # NOTE: Raycasts will not detect any `bounds` that contain the `Player`'s camera's transform point.
-(Player:player).Raycast<public>(Entity:entity, MaxDistance:float)<decides><transacts>:raycast_hit=
+(Player:player).Raycast<public>(Entity:entity, ?MaxDistance:float = Inf)<decides><transacts>:raycast_hit=
     Ray:ray = Player.GetCameraRay()
-    Entity.Raycast[Ray, MaxDistance]
-
-# Casts forwards from the `Player`'s camera against all bounding boxes in the scene.
-# Returns information about where the bounding boxes were hit.
-# NOTE: Raycasts will not detect any `bounds` that contain the `Player`'s camera's transform point.
-# NOTE: The order of the results is unspecified.
-(Player:player).RaycastAll<public>()<transacts>:[]raycast_hit=
-    Player.RaycastAll(Inf)
+    Entity.Raycast[Ray, ?MaxDistance := MaxDistance]
 
 # Casts forwards from the `Player`'s camera with `MaxDistance` against all bounding boxes in the scene.
 # Returns information about where the bounding boxes were hit.
 # NOTE: Raycasts will not detect any `bounds` that contain the `Player`'s camera's transform point.
 # NOTE: The order of the results is unspecified.
-(Player:player).RaycastAll<public>(MaxDistance:float)<transacts>:[]raycast_hit=
+(Player:player).RaycastAll<public>(?MaxDistance:float = Inf)<transacts>:[]raycast_hit=
     Ray:ray = Player.GetCameraRay()
-    Player.RaycastAll(Ray, MaxDistance)
+    Player.RaycastAll(Ray, ?MaxDistance := MaxDistance)

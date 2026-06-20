@@ -121,129 +121,73 @@ DebugLinecast<public>(Player:player, Entity:entity, End:vector3, ?Color:color = 
     Start := Player.DeprojectViewportToWorld[0.5, 0.5].Origin
     DebugLinecast[Entity, Start, End, ?Color := Color, ?Duration := Duration]
 
-# Calls: `Entity.Raycast[:ray, :float]`.
-# Draws an arrow representing the ray pointed from `Origin` towards `Direction`, using the provided draw parameters.
-# If an entity is hit, the arrow will be drawn to the hit position and an additional arrow will reflect on the hit's normal.
-# Returns information about where an entity's bounding box was hit.
-# Fails if there is no entity found with a bounding box intersecting the ray.
-# NOTE: Raycasts will not detect any `bounds` that contain `Origin`.
-DebugRaycast<public>(Entity:entity, Origin:vector3, Direction:vector3, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0)<decides><transacts>:raycast_hit=
-    DebugRaycast[Entity, Origin, Direction, Inf, ?Color := Color, ?Duration := Duration]
-
-# Calls: `Entity.Raycast[:ray, :float]`.
+# Calls: `Entity.Raycast[:ray, ?MaxDistance]`.
 # Draws an arrow representing the ray pointed from `Origin` towards `Direction` with `MaxDistance`, using the provided draw parameters.
 # If an entity is hit, the arrow will be drawn to the hit position and an additional arrow will reflect on the hit's normal.
 # Returns information about where an entity's bounding box was hit.
 # Fails if there is no entity found with a bounding box intersecting the ray.
 # NOTE: Raycasts will not detect any `bounds` that contain `Origin`.
-DebugRaycast<public>(Entity:entity, Origin:vector3, Direction:vector3, MaxDistance:float, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0)<decides><transacts>:raycast_hit=
+DebugRaycast<public>(Entity:entity, Origin:vector3, Direction:vector3, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0, ?MaxDistance:float = Inf)<decides><transacts>:raycast_hit=
     Ray:ray = MakeRay(Origin, Direction)
-    DebugRaycast[Entity, Ray, MaxDistance, ?Color := Color, ?Duration := Duration]
+    DebugRaycast[Entity, Ray, ?Color := Color, ?Duration := Duration, ?MaxDistance := MaxDistance]
 
-# Calls: `Entity.Raycast[:ray, :float]`.
-# Draws an arrow representing `Ray`, using the provided draw parameters.
-# If an entity is hit, the arrow will be drawn to the hit position and an additional arrow will reflect on the hit's normal.
-# Returns information about where an entity's bounding box was hit.
-# Fails if there is no entity found with a bounding box intersecting the ray.
-# NOTE: Raycasts will not detect any `bounds` that contain `Ray.Origin`.
-DebugRaycast<public>(Entity:entity, Ray:ray, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0)<decides><transacts>:raycast_hit=
-    DebugRaycast[Entity, Ray.Origin, Ray.Direction, Inf, ?Color := Color, ?Duration := Duration]
-
-# Calls: `Entity.Raycast[:ray, :float]`.
+# Calls: `Entity.Raycast[:ray, ?MaxDistance]`.
 # Draws an arrow representing `Ray` with `MaxDistance`, using the provided draw parameters.
 # If an entity is hit, the arrow will be drawn to the hit position and an additional arrow will reflect on the hit's normal.
 # Returns information about where an entity's bounding box was hit.
 # Fails if there is no entity found with a bounding box intersecting the ray.
 # NOTE: Raycasts will not detect any `bounds` that contain `Ray.Origin`.
-DebugRaycast<public>(Entity:entity, Ray:ray, MaxDistance:float, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0)<decides><transacts>:raycast_hit=
-    Hit:raycast_hit = Entity.Raycast[Ray, MaxDistance]
+DebugRaycast<public>(Entity:entity, Ray:ray, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0, ?MaxDistance:float = Inf)<decides><transacts>:raycast_hit=
+    Hit:raycast_hit = Entity.Raycast[Ray, ?MaxDistance := MaxDistance]
     Draw:debug_draw = debug_draw{Channel := debug_raycast_channel}
     Draw.DrawArrow(Ray.Origin, Hit.Position, ?Color := Color, ?DrawDurationPolicy := GetDebugDrawDurationPolicy(Duration), ?Duration := Duration, ?Thickness := 2.0)
     Draw.DrawArrow(Hit.Position, Hit.Position + Hit.Normal * 500.0, ?Color := MakeColorFromSRGB(1.0 - Color.R, 1.0 - Color.G, 1.0 - Color.B), ?DrawDurationPolicy := GetDebugDrawDurationPolicy(Duration), ?Duration := Duration, ?Thickness := 2.0)
     Hit
 
-# Calls: `Entity.Raycast[:ray, :float]`.
-# Draws an arrow representing the ray pointed from the `Player`'s camera, using the provided draw parameters.
-# If an entity is hit, the arrow will be drawn to the hit position and an additional arrow will reflect on the hit's normal.
-# Returns information about where an entity's bounding box was hit.
-# Fails if there is no entity found with a bounding box intersecting the line in front of the `Player`'s camera.
-# NOTE: Raycasts will not detect any `bounds` that contain the `Player`'s camera's transform point.
-DebugRaycast<public>(Player:player, Entity:entity, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0)<decides><transacts>:raycast_hit=
-    DebugRaycast[Player, Entity, Inf, ?Color := Color, ?Duration := Duration]
-
-# Calls: `Entity.Raycast[:ray, :float]`.
+# Calls: `Entity.Raycast[:ray, ?MaxDistance]`.
 # Draws an arrow representing the ray pointed from the `Player`'s camera with `MaxDistance`, using the provided draw parameters.
 # If an entity is hit, the arrow will be drawn to the hit position and an additional arrow will reflect on the hit's normal.
 # Returns information about where an entity's bounding box was hit.
 # Fails if there is no entity found with a bounding box intersecting the line in front of the `Player`'s camera.
 # NOTE: Raycasts will not detect any `bounds` that contain the `Player`'s camera's transform point.
-DebugRaycast<public>(Player:player, Entity:entity, MaxDistance:float, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0)<decides><transacts>:raycast_hit=
+DebugRaycast<public>(Player:player, Entity:entity, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0, ?MaxDistance:float = Inf)<decides><transacts>:raycast_hit=
     Ray:ray = Player.GetCameraRay()
-    DebugRaycast[Entity, Ray, MaxDistance, ?Color := Color, ?Duration := Duration]
+    DebugRaycast[Entity, Ray, ?Color := Color, ?Duration := Duration, ?MaxDistance := MaxDistance]
 
-# Calls: `Entity.RaycastAll(:ray, :float)`.
-# Draws an arrow representing the ray pointed from `Origin` towards `Direction`, using the provided draw parameters.
-# If any entities are hit, an arrow will be drawn to each of their hit positions and an additional arrow will reflect on the hit's normal.
-# Returns information about where the bounding boxes were hit.
-# NOTE: Raycasts will not detect any `bounds` that contain `Origin`.
-# NOTE: The order of the results is unspecified.
-# NOTE: `Entity` defines the context for the raycast but does not otherwise take part.
-DebugRaycastAll<public>(Entity:entity, Origin:vector3, Direction:vector3, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0)<transacts>:[]raycast_hit=
-    DebugRaycastAll(Entity, Origin, Direction, Inf, ?Color := Color, ?Duration := Duration)
-
-# Calls: `Entity.RaycastAll(:ray, :float)`.
+# Calls: `Entity.RaycastAll(:ray, ?MaxDistance)`.
 # Draws an arrow representing the ray pointed from `Origin` towards `Direction` with `MaxDistance`, using the provided draw parameters.
 # If any entities are hit, an arrow will be drawn to each of their hit positions and an additional arrow will reflect on the hit's normal.
 # Returns information about where the bounding boxes were hit.
 # NOTE: Raycasts will not detect any `bounds` that contain `Origin`.
 # NOTE: The order of the results is unspecified.
 # NOTE: `Entity` defines the context for the raycast but does not otherwise take part.
-DebugRaycastAll<public>(Entity:entity, Origin:vector3, Direction:vector3, MaxDistance:float, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0)<transacts>:[]raycast_hit=
+DebugRaycastAll<public>(Entity:entity, Origin:vector3, Direction:vector3, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0, ?MaxDistance:float = Inf)<transacts>:[]raycast_hit=
     Ray:ray = MakeRay(Origin, Direction)
-    DebugRaycastAll(Entity, Ray, MaxDistance, ?Color := Color, ?Duration := Duration)
+    DebugRaycastAll(Entity, Ray, ?Color := Color, ?Duration := Duration, ?MaxDistance := MaxDistance)
 
-# Calls: `Entity.RaycastAll(:ray, :float)`.
-# Draws an arrow representing `Ray`, using the provided draw parameters.
-# If any entities are hit, an arrow will be drawn to each of their hit positions and an additional arrow will reflect on the hit's normal.
-# Returns information about where the bounding boxes were hit.
-# NOTE: Raycasts will not detect any `bounds` that contain `Ray.Origin`.
-# NOTE: The order of the results is unspecified.
-# NOTE: `Entity` defines the context for the raycast but does not otherwise take part.
-DebugRaycastAll<public>(Entity:entity, Ray:ray, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0)<transacts>:[]raycast_hit=
-    DebugRaycastAll(Entity, Ray, Inf, ?Color := Color, ?Duration := Duration)
-
-# Calls: `Entity.RaycastAll(:ray, :float)`.
+# Calls: `Entity.RaycastAll(:ray, ?MaxDistance)`.
 # Draws an arrow representing `Ray` with `MaxDistance`, using the provided draw parameters.
 # If any entities are hit, an arrow will be drawn to each of their hit positions and an additional arrow will reflect on the hit's normal.
 # Returns information about where the bounding boxes were hit.
 # NOTE: Raycasts will not detect any `bounds` that contain `Ray.Origin`.
 # NOTE: The order of the results is unspecified.
 # NOTE: `Entity` defines the context for the raycast but does not otherwise take part.
-DebugRaycastAll<public>(Entity:entity, Ray:ray, MaxDistance:float, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0)<transacts>:[]raycast_hit=
+DebugRaycastAll<public>(Entity:entity, Ray:ray, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0, ?MaxDistance:float = Inf)<transacts>:[]raycast_hit=
     Draw:debug_draw = debug_draw{Channel := debug_raycast_channel}
-    for (Hit : Entity.RaycastAll(Ray, MaxDistance)):
+    for (Hit : Entity.RaycastAll(Ray, ?MaxDistance := MaxDistance)):
         Draw.DrawArrow(Ray.Origin, Hit.Position, ?Color := Color, ?DrawDurationPolicy := GetDebugDrawDurationPolicy(Duration), ?Duration := Duration, ?Thickness := 2.0)
         Draw.DrawArrow(Hit.Position, Hit.Position + Hit.Normal * 500.0, ?Color := MakeColorFromSRGB(1.0 - Color.R, 1.0 - Color.G, 1.0 - Color.B), ?DrawDurationPolicy := GetDebugDrawDurationPolicy(Duration), ?Duration := Duration, ?Thickness := 2.0)
         Hit
 
-# Calls: `Entity.RaycastAll(:ray, :float)`.
-# Draws an arrow representing the ray pointed from the `Player`'s camera, using the provided draw parameters.
-# If any entities are hit, an arrow will be drawn to each of their hit positions and an additional arrow will reflect on the hit's normal.
-# Returns information about where the bounding boxes were hit.
-# NOTE: Raycasts will not detect any `bounds` that contain the `Player`'s camera's transform point.
-# NOTE: The order of the results is unspecified.
-DebugRaycastAll<public>(Player:player, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0)<transacts>:[]raycast_hit=
-    DebugRaycastAll(Player, Inf, ?Color := Color, ?Duration := Duration)
-
-# Calls: `Entity.RaycastAll(:ray, :float)`.
+# Calls: `Entity.RaycastAll(:ray, ?MaxDistance)`.
 # Draws an arrow representing the ray pointed from the `Player`'s camera with `MaxDistance`, using the provided draw parameters.
 # If any entities are hit, an arrow will be drawn to each of their hit positions and an additional arrow will reflect on the hit's normal.
 # Returns information about where the bounding boxes were hit.
 # NOTE: Raycasts will not detect any `bounds` that contain the `Player`'s camera's transform point.
 # NOTE: The order of the results is unspecified.
-DebugRaycastAll<public>(Player:player, MaxDistance:float, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0)<transacts>:[]raycast_hit=
+DebugRaycastAll<public>(Player:player, ?Color:color = NamedColors.Yellow, ?Duration:float = 0.0, ?MaxDistance:float = Inf)<transacts>:[]raycast_hit=
     Ray:ray = Player.GetCameraRay()
-    DebugRaycastAll(Player, Ray, MaxDistance, ?Color := Color, ?Duration := Duration)
+    DebugRaycastAll(Player, Ray, ?Color := Color, ?Duration := Duration, ?MaxDistance := MaxDistance)
 
 GetDebugDrawDurationPolicy<internal>(Duration:float)<computes>:debug_draw_duration_policy=
     if (not Duration.IsFinite[]):

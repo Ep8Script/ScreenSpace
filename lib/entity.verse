@@ -30,35 +30,21 @@ using { /Verse.org/SpatialMath }
     not IsAlmostEqual[Start, End, 0.0]
     Difference:vector3 = End - Start
     MaxDistance:float = Difference.Length()
-    Entity.Raycast[Start, Difference / MaxDistance, MaxDistance]
-
-# Casts a ray from `Origin` towards `Direction` against all bounding boxes in the entity's descendants, starting with `Entity`.
-# Returns information about where an entity's bounding box was hit.
-# Fails if there is no entity found with a bounding box intersecting the ray.
-# NOTE: Raycasts will not detect any `bounds` that contain `Origin`.
-(Entity:entity).Raycast<public>(Origin:vector3, Direction:vector3)<decides><transacts>:raycast_hit=
-    Entity.Raycast[Origin, Direction, Inf]
+    Entity.Raycast[Start, Difference / MaxDistance, ?MaxDistance := MaxDistance]
 
 # Casts a ray from `Origin` towards `Direction` with `MaxDistance` against all bounding boxes in the entity's descendants, starting with `Entity`.
 # Returns information about where an entity's bounding box was hit.
 # Fails if there is no entity found with a bounding box intersecting the ray.
 # NOTE: Raycasts will not detect any `bounds` that contain `Origin`.
-(Entity:entity).Raycast<public>(Origin:vector3, Direction:vector3, MaxDistance:float)<decides><transacts>:raycast_hit=
+(Entity:entity).Raycast<public>(Origin:vector3, Direction:vector3, ?MaxDistance:float = Inf)<decides><transacts>:raycast_hit=
     Ray:ray = MakeRay(Origin, Direction)
-    Entity.Raycast[Ray, MaxDistance]
-
-# Casts `Ray` against all bounding boxes in the entity's descendants, starting with `Entity`.
-# Returns information about where an entity's bounding box was hit.
-# Fails if there is no entity found with a bounding box intersecting the ray.
-# NOTE: Raycasts will not detect any `bounds` that contain `Ray.Origin`.
-(Entity:entity).Raycast<public>(Ray:ray)<decides><transacts>:raycast_hit=
-    Entity.Raycast[Ray, Inf]
+    Entity.Raycast[Ray, ?MaxDistance := MaxDistance]
 
 # Casts `Ray` with `MaxDistance` against all bounding boxes in the entity's descendants, starting with `Entity`.
 # Returns information about where an entity's bounding box was hit.
 # Fails if there is no entity found with a bounding box intersecting the ray.
 # NOTE: Raycasts will not detect any `bounds` that contain `Ray.Origin`.
-(Entity:entity).Raycast<public>(Ray:ray, MaxDistance:float)<decides><transacts>:raycast_hit=
+(Entity:entity).Raycast<public>(Ray:ray, ?MaxDistance:float = Inf)<decides><transacts>:raycast_hit=
     Entity.GetSimulationEntity[]
     GlobalBounds:bounds = Entity.GetBoundsGlobal[]
     HasComponent:logic = logic{Entity.GetComponent[bounds_component]}
@@ -105,41 +91,25 @@ using { /Verse.org/SpatialMath }
             Transform := InvertedTransform
     else:
         var ClosestHit:?raycast_hit = false
-        for (Child : Entity.GetEntities(), Hit := Child.Raycast[TransformedRay, ClosestHit?.Distance or MaxDistance]):
+        for (Child : Entity.GetEntities(), Hit := Child.Raycast[TransformedRay, ?MaxDistance := ClosestHit?.Distance or MaxDistance]):
             set ClosestHit = option{Hit}
         ClosestHit?
-
-# Casts a ray from `Origin` towards `Direction` against all bounding boxes in the scene.
-# Returns information about where the bounding boxes were hit.
-# NOTE: Raycasts will not detect any `bounds` that contain `Origin`.
-# NOTE: The order of the results is unspecified.
-# NOTE: This entity defines the context for the raycast but does not otherwise take part.
-(Entity:entity).RaycastAll<public>(Origin:vector3, Direction:vector3)<transacts>:[]raycast_hit=
-    Entity.RaycastAll(Origin, Direction, Inf)
 
 # Casts a ray from `Origin` towards `Direction` with `MaxDistance` against all bounding boxes in the scene.
 # Returns information about where the bounding boxes were hit.
 # NOTE: Raycasts will not detect any `bounds` that contain `Origin`.
 # NOTE: The order of the results is unspecified.
 # NOTE: This entity defines the context for the raycast but does not otherwise take part.
-(Entity:entity).RaycastAll<public>(Origin:vector3, Direction:vector3, MaxDistance:float)<transacts>:[]raycast_hit=
+(Entity:entity).RaycastAll<public>(Origin:vector3, Direction:vector3, ?MaxDistance:float = Inf)<transacts>:[]raycast_hit=
     Ray:ray = MakeRay(Origin, Direction)
-    Entity.RaycastAll(Ray, MaxDistance)
-
-# Casts `Ray` against all bounding boxes in the scene.
-# Returns information about where the bounding boxes were hit.
-# NOTE: Raycasts will not detect any `bounds` that contain `Ray.Origin`.
-# NOTE: The order of the results is unspecified.
-# NOTE: This entity defines the context for the raycast but does not otherwise take part.
-(Entity:entity).RaycastAll<public>(Ray:ray)<transacts>:[]raycast_hit=
-    Entity.RaycastAll(Ray, Inf)
+    Entity.RaycastAll(Ray, ?MaxDistance := MaxDistance)
 
 # Casts `Ray` with `MaxDistance` against all bounding boxes in the scene.
 # Returns information about where the bounding boxes were hit.
 # NOTE: Raycasts will not detect any `bounds` that contain `Ray.Origin`.
 # NOTE: The order of the results is unspecified.
 # NOTE: This entity defines the context for the raycast but does not otherwise take part.
-(Entity:entity).RaycastAll<public>(Ray:ray, MaxDistance:float)<transacts>:[]raycast_hit=
+(Entity:entity).RaycastAll<public>(Ray:ray, ?MaxDistance:float = Inf)<transacts>:[]raycast_hit=
     if (SimulationEntity := Entity.GetSimulationEntity[]):
         RaycastAllInternal(SimulationEntity, Ray, MaxDistance)
     else:
