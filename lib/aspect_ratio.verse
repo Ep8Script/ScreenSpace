@@ -2,7 +2,10 @@ using { /Verse.org/Simulation }
 
 # An aspect ratio defined by width and height.
 aspect_ratio<public> := struct<computes>:
+    # The height of the aspect ratio.
     Height<public> : int
+
+    # The width of the aspect ratio.
     Width<public> : int
 
 # Returns the ratio of `AspectRatio` as a floating point number.
