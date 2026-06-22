@@ -12,12 +12,19 @@ aspect_ratio<public> := struct<computes>:
 (AspectRatio:aspect_ratio).GetRatio<public>()<computes>:float=
     AspectRatio.Width * 1.0 / (AspectRatio.Height * 1.0)
 
-# Makes an `aspect_ratio` that represents the screen resolution of `AspectRatio`, assuming 1080p.
-(AspectRatio:aspect_ratio).GetScreenResolution<public>()<decides><reads>:aspect_ratio=
+# Makes an `aspect_ratio` that represents the screen dimensions of `AspectRatio`, assuming 1080p.
+# Fails if `not AspectRatio.GetRatio().IsFinite[]`.
+(AspectRatio:aspect_ratio).GetScreenDimensions<public>()<decides><reads>:aspect_ratio=
     Ratio:float = AspectRatio.GetRatio()
-    aspect_ratio:
-        Height := 1080
-        Width := Floor[Ratio * 1080 + 0.5]
+    Ratio.IsFinite[]
+    if (AspectRatio.Width >= AspectRatio.Height):
+        aspect_ratio:
+            Height := 1080
+            Width := Floor[Ratio * 1080 + 0.5]
+    else:
+        aspect_ratio:
+            Height := Floor[1080.0 / Ratio + 0.5]
+            Width := 1080
 
 # Makes a `string` representation of `AspectRatio`.
 ToString<public>(AspectRatio:aspect_ratio)<computes>:string=
