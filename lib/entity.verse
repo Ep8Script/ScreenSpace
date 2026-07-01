@@ -117,8 +117,8 @@ using { /Verse.org/SpatialMath }
 
 RaycastAllInternal<internal>(Entity:entity, Ray:ray, MaxDistance:float)<transacts>:[]raycast_hit=
     if:
-        GlobalBounds:bounds = Entity.GetBoundsGlobal[]
-        HasComponent:logic = logic{Entity.GetComponent[bounds_component]}
+        GlobalBounds := Entity.GetBoundsGlobal[]
+        HasComponent := logic{Entity.GetComponent[bounds_component]}
         if (HasComponent?):
             not GlobalBounds.Contains[Ray.Origin]
         if (HasComponent? or not GlobalBounds.Contains[Ray.Origin]):
