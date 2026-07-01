@@ -15,14 +15,14 @@ Clamp<public>(Val:vector3, A:vector3, B:vector3)<computes>:vector3=
         Up := Clamp(Val.Up, A.Up, B.Up)
         Forward := Clamp(Val.Forward, A.Forward, B.Forward)
 
-# Makes a `vector3` by calculating the maximum of the components of `X` and `Y`.
+# Makes a `vector3` by calculating the maximum of the components of `V1` and `V2`.
 Max<public>(V1:vector3, V2:vector3)<computes>:vector3=
     vector3:
         Left := Max(V1.Left, V2.Left)
         Up := Max(V1.Up, V2.Up)
         Forward := Max(V1.Forward, V2.Forward)
 
-# Makes a `vector3` by calculating the minimum of the components of `X` and `Y`.
+# Makes a `vector3` by calculating the minimum of the components of `V1` and `V2`.
 Min<public>(V1:vector3, V2:vector3)<computes>:vector3=
     vector3:
         Left := Min(V1.Left, V2.Left)
