@@ -27,8 +27,8 @@ using { /Verse.org/SpatialMath }
     ray:
         Direction := CrossProduct(Left.Origin - Corner.Origin, Down.Origin - Corner.Origin).MakeUnitVector()
         Origin := block:
-            CrossDelta := CrossProduct(Left.Direction, Corner.Origin - Left.Origin)
-            CrossDirections := CrossProduct(Corner.Direction, Left.Direction)
+            CrossDelta:vector3 = CrossProduct(Left.Direction, Corner.Origin - Left.Origin)
+            CrossDirections:vector3 = CrossProduct(Corner.Direction, Left.Direction)
             Corner.Origin + Corner.Direction * DotProduct(CrossDelta, CrossDirections) / DotProduct(CrossDirections, CrossDirections)
 
 # Calculates a `rect` in normalized coordinates on the `Player`'s viewport that perfectly encloses the `Bounds`.
