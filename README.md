@@ -21,7 +21,7 @@ This is a Verse module accessible inside your UEFN project structure:
 3. Optional: Copy the "**Python**" folder to your project's Content/ directory (or anywhere on your PC). This contains scripts to help calculate and set the bounds of your entities in-editor.
 
 ### Usage
-```as
+```verse
 using { /Fortnite.com/Game }
 using { /Fortnite.com/Playspaces }
 using { ScreenSpace }
