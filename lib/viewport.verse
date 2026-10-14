@@ -39,12 +39,11 @@ using { /Verse.org/SpatialMath }
 # Makes an `aspect_ratio` representing the `Player`'s screen's aspect ratio with the greatest common denominator.
 # For example, `aspect_ratio{Height:=9, Width:=16}`.
 (Player:player).GetViewportAspectRatio<public>()<decides><transacts>:aspect_ratio=
-    Center:vector3 = Player.GetViewportCenter[]
     var Denominator:float = 0.0
     var LastDenominator:float = 1.0
     var LastNumerator:float = 0.0
     var Numerator:float = 1.0
-    Ratio:float = Center.Left / -Center.Up
+    Ratio:float = Player.GetViewportRatio[]
     var Remainder:float = Ratio
     var Return:logic = true
     loop:

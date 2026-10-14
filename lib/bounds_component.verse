@@ -72,9 +72,7 @@ debug_bounds_component_channel<internal> := class(debug_draw_channel):
 # Caches the encapsulated bounds of this entity's immediate children.
 # Returns false if the entity already has bounds or if none of its descendants have a `bounds_component`.
 (Entity:entity).CacheBounds<public>():logic=
-    if (Entity.GetComponent[bounds_component]):
-        false
-    else if (Bounds := Entity.GetBounds[]):
+    if (not Entity.GetComponent[bounds_component], Bounds := Entity.GetBounds[]):
         Entity.SetBounds(Bounds)
         true
     else:
